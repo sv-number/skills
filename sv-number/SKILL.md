@@ -373,7 +373,7 @@ The same nine calls are available as an MCP server, so a runner that speaks MCP 
 have to touch HTTP at all:
 
 ```bash
-claude mcp add sv-number --env SVN_API_KEY=your_key_here -- npx -y github:sv-number/mcp-server
+claude mcp add sv-number --env SVN_API_KEY=your_key_here -- npx -y sv-number-mcp
 ```
 
 Source and configuration for other runners: https://github.com/sv-number/mcp-server
