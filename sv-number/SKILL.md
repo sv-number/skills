@@ -68,12 +68,13 @@ choose country + service
 ```
 
 The number lives 20 minutes. After that the activation expires on its own and any
-call against its id answers `NO_ACTIVATION`. Plan the whole flow: request the code from
+call against its id answers `ERROR_API`. Plan the whole flow: request the code from
 the target service immediately after you get the number, not ten minutes later.
 
-Every request needs `lang`. It sets both the language and the currency of the answer:
-`en` = dollars, `ru` = rubles. It must match the currency of your balance, otherwise the
-prices you read are not the prices you pay.
+Always send `lang`, even though the API answers without it. It picks the currency, and
+the default is not `en`: the same balance came back as 3188.81 with `lang=en` and as 270.20
+with no `lang` at all (checked 07 August 2026). Read prices in one currency and pay in
+another, and every number you compare is wrong.
 
 Both GET and POST work. Every example below uses GET for readability.
 
@@ -109,8 +110,15 @@ curl 'https://sms-verification-number.com/stubs/handler_api?api_key=APIKEY&actio
 #      "cheap_prices_countries":[{"country_id":6,"country_name":"Indonesia","price":"0.20"}, ...]}]
 ```
 
-`deliverability` is your steering wheel: a country where the code arrives 80% of the time
-is worth more than one that is three cents cheaper and answers half as often.
+`deliverability` is the share of codes that arrived for other users on that exact
+service and country. Where it carries a number, trust it over price: a pair that answers
+80% of the time beats one that is three cents cheaper and answers half as often.
+
+**A zero means "no statistics yet", not "nothing gets through".** The field is filled in
+for a small slice of pairs (74 out of 3835 on 07 August 2026), so most of what you read
+will be `0`. Do not throw those away. When there is no number, fall back to `quantity`:
+a large live pool is the pair that other agents are using successfully right now.
+
 `cheap_prices_countries` tells you where the same service costs least, so use it when the
 country doesn't matter to the service you're signing up for.
 
@@ -157,6 +165,7 @@ curl '...&action=setStatus&id=234242&status=6&lang=en'   # → ACCESS_ACTIVATION
 curl '...&action=setStatus&id=234242&status=8&lang=en'   # → ACCESS_CANCEL
 
 # need a second code on the same number (password reset, re-send)
+# works once a first code has already arrived; before that it answers BAD_STATUS
 curl '...&action=setStatus&id=234242&status=3&lang=en'   # → ACCESS_RETRY_GET
 ```
 
@@ -239,10 +248,11 @@ you lost track of after a crash or a restart.
 The service you're registering with decides how strict the check is, and the country
 decides whether the SMS gets through at all. Three signals, in order of importance:
 
-1. `deliverability`: the share of SMS that arrived for other users on this
-   service/country pair. Low number, high chance you pay and wait for nothing.
+1. `deliverability`, when it is not zero: the share of SMS that arrived for other users on
+   this service and country. A low number means you are likely to pay and wait for nothing.
+   Zero means the pair has no statistics yet, so judge it by the next signal instead.
 2. `quantity`: how many numbers are online. A pool of three is a pool that will
-   answer `NO_NUMBERS` on your second try.
+   answer `NO_NUMBERS` on your second try; a pool of thousands is one people are using.
 3. `price` and `cheap_prices_countries`: only after the first two are acceptable.
 
 `NO_NUMBERS` is not an error to retry blindly. Change the country, or drop `operator` back
@@ -287,15 +297,15 @@ Plain-text markers, returned with HTTP 200, so check the body, not the status co
 | Marker | Meaning |
 |---|---|
 | `BAD_KEY` | Invalid API key |
-| `BAD_ACTION` | Unknown or malformed action |
-| `BAD_LANG` | `lang` missing or not `ru`/`en` |
+| `BAD_ACTION` | Malformed parameters, for example an id that is not a number |
+| `NO_METHOD` | Unknown action |
 | `NO_BALANCE` | Not enough money to order |
 | `NO_NUMBERS` | Nothing available for this country/operator/service |
 | `WRONG_MAX_PRICE:MIN` | Your `maxPrice` is below the current minimum |
-| `NO_ACTIVATION` | Unknown id, or the 20 minutes ran out |
+| `BAD_STATUS` | The activation is not in a state where that status makes sense |
 | `CANNOT_BEFORE_2_MIN` | Cancel attempted too early; wait a couple of minutes and repeat |
 | `REQUEST_LIMIT` | Over the rate limit |
-| `ERROR_SQL`, `ERROR_API` | Server-side; retry with backoff |
+| `ERROR_API`, `ERROR_SQL` | **Check your parameters first.** An unknown service, an unknown country and an unknown activation id all come back as `ERROR_API`, not as a named error. Only retry with a backoff once the parameters are known to be right |
 
 ---
 
@@ -310,8 +320,8 @@ burns it for nothing. Poll every 3 to 5 seconds per activation and back off on `
 
 Read these once. They'll save you money.
 
-1. `lang` is mandatory and sets the currency. Read prices in one currency and pay in
-   another and your cost model is wrong from the first call.
+1. `lang` sets the currency, and leaving it out does not fail loudly: the call succeeds
+   in another currency. Send it on every request.
 2. The number expires in 20 minutes. Get the target service to send the code right
    away; don't hold a number "for later".
 3. Cancel as soon as you know the code is not coming. If the API answers `CANNOT_BEFORE_2_MIN`, wait a couple of minutes and repeat.
