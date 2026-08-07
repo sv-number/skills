@@ -7,7 +7,7 @@ the API.
 One markdown file. No SDK, no dashboard, no human at the keyboard.
 
 ```
-> Read skills.md and register me a Telegram account on an Indonesian number.
+> Read the sv-number skill and register me a Telegram account on an Indonesian number.
 
   ordered +62 838 1234 5678
   code 123456
@@ -52,12 +52,13 @@ machine.
 ## Start
 
 ```bash
-curl -O https://raw.githubusercontent.com/sv-number/skills/main/skills.md
+curl -O https://raw.githubusercontent.com/sv-number/skills/main/sv-number/SKILL.md
 export SVN_API_KEY=your_key_here
 ```
 
-Point any agent runner at the file. It is plain markdown, so Claude Code, Codex and
-anything else that reads a skill can use it as is. The key comes from
+The layout follows the [Agent Skills specification](https://agentskills.io/specification):
+a directory named after the skill, holding `SKILL.md` and `scripts/`. Point any runner at
+it and it works as is, in Claude Code, Codex or anything else that reads a skill. The key comes from
 [your profile](https://sms-verification-number.com/en/user/profile/) after
 [signup](https://sms-verification-number.com/en/register/). The balance has to be funded:
 there is no free tier on this API.
@@ -72,8 +73,8 @@ setStatus 6 -> ACCESS_ACTIVATION           done, the charge stays
 setStatus 8 -> ACCESS_CANCEL               nothing came, money back
 ```
 
-Runnable versions: [`examples/order_number.py`](examples/order_number.py) and
-[`examples/order_number.mjs`](examples/order_number.mjs).
+Runnable versions: [`sv-number/scripts/order_number.py`](sv-number/scripts/order_number.py)
+and [`sv-number/scripts/order_number.mjs`](sv-number/scripts/order_number.mjs).
 
 ## What it is not
 
@@ -90,7 +91,7 @@ when nothing arrived. A forgotten activation holds money until it expires.
 
 ## Links
 
-- Skill file: [`skills.md`](skills.md)
+- Skill file: [`sv-number/SKILL.md`](sv-number/SKILL.md)
 - The same skill as a page: https://sms-verification-number.com/en/agent-skill/
 - Full API reference: https://sms-verification-number.com/en/api-sms-activate/
 - Live coverage and prices: https://sms-verification-number.com/en/number-for-ai-agents/
