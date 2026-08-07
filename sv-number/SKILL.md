@@ -110,6 +110,24 @@ curl 'https://sms-verification-number.com/stubs/handler_api?api_key=APIKEY&actio
 #      "cheap_prices_countries":[{"country_id":6,"country_name":"Indonesia","price":"0.20"}, ...]}]
 ```
 
+Order the code that belongs to the site you are actually signing up with. Each code has
+its own pool of numbers behind it, and a number bought for Telegram does not receive a
+Discord message. Look the code up every time instead of recalling it: the codes are short
+and arbitrary, and a wrong guess buys a number that will never ring. `uk` is Airbnb, not
+the United Kingdom. `re` is Coinbase, `tn` is LinkedIn, `mt` is Steam, `lf` is TikTok,
+`dr` is ChatGPT.
+
+Match on `name`, not on the code, and search for the bare name rather than the domain:
+`discord` finds it, `discord.com` does not. One entry can cover several sites, so read the
+whole name (`Google,youtube,Gmail` is one code).
+
+The catalogue is not the same in every country. A service missing here can exist a country
+over, so check a second country before deciding we do not carry it.
+
+When the site really is not in the catalogue, order `ot`, "Not on list". That pool receives
+SMS from any sender that is not in the list itself. It is not a wildcard: a site that has
+its own code sends to that code, and `ot` will not pick it up.
+
 `deliverability` is the share of codes that arrived for other users on that exact
 service and country. Where it carries a number, trust it over price: a pair that answers
 80% of the time beats one that is three cents cheaper and answers half as often.
