@@ -160,8 +160,10 @@ curl '...&action=setStatus&id=234242&status=8&lang=en'   # → ACCESS_CANCEL
 curl '...&action=setStatus&id=234242&status=3&lang=en'   # → ACCESS_RETRY_GET
 ```
 
-Cancelling is refused for the first 2 minutes (`CANNOT_BEFORE_2_MIN`). That window
-exists because most codes arrive inside it. Wait it out, then cancel.
+Cancelling right after ordering works: the money returns to the balance in full (checked
+against the balance on 07 August 2026, twice, in different countries). The API can still
+answer `CANNOT_BEFORE_2_MIN` on an early cancel; if it does, wait a couple of minutes and
+repeat. Either way, letting the 20 minutes run out returns the money on its own.
 
 ---
 
@@ -291,7 +293,7 @@ Plain-text markers, returned with HTTP 200, so check the body, not the status co
 | `NO_NUMBERS` | Nothing available for this country/operator/service |
 | `WRONG_MAX_PRICE:MIN` | Your `maxPrice` is below the current minimum |
 | `NO_ACTIVATION` | Unknown id, or the 20 minutes ran out |
-| `CANNOT_BEFORE_2_MIN` | Cancel attempted too early |
+| `CANNOT_BEFORE_2_MIN` | Cancel attempted too early; wait a couple of minutes and repeat |
 | `REQUEST_LIMIT` | Over the rate limit |
 | `ERROR_SQL`, `ERROR_API` | Server-side; retry with backoff |
 
@@ -312,7 +314,7 @@ Read these once. They'll save you money.
    another and your cost model is wrong from the first call.
 2. The number expires in 20 minutes. Get the target service to send the code right
    away; don't hold a number "for later".
-3. You can't cancel in the first 2 minutes. That is deliberate: most codes land inside that window.
+3. Cancel as soon as you know the code is not coming. If the API answers `CANNOT_BEFORE_2_MIN`, wait a couple of minutes and repeat.
 4. Errors arrive as text with HTTP 200. `if response.startswith("ACCESS_NUMBER")` before
    you split anything.
 5. One activation = one service. The `service=` you ordered under is the service you use it for.
