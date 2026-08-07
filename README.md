@@ -37,11 +37,12 @@ minutes and it returns to the balance by itself.
 One activation, one holder. Nobody else receives its codes, which is exactly the part that
 free shared pools get wrong.
 
-### Steer by delivery rate instead of price
+### Steer by what the pool is doing, not by price
 
-The catalogue call returns, per service and country, the share of codes that actually
-arrived for other users. An agent that reads that number stops burning money on cheap
-countries that never deliver.
+The catalogue call returns, per service and country, the share of codes that arrived for
+other users and how many numbers are live right now. Where the share is measured, an agent
+that reads it stops paying for countries that never deliver; where it is not, the size of
+the live pool tells the same story.
 
 ### Finish the second factor too
 
