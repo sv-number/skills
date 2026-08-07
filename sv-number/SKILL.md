@@ -12,7 +12,7 @@ metadata:
   api_base: https://sms-verification-number.com/stubs/handler_api
   homepage: https://sms-verification-number.com
   docs: https://sms-verification-number.com/en/api-sms-activate/
-  version: "1.0.0"
+  version: "1.0.1"
 ---
 
 # SV Number
@@ -67,9 +67,12 @@ choose country + service
    money returns                     activation closed
 ```
 
-The number lives 20 minutes. After that the activation expires on its own and any
-call against its id answers `ERROR_API`. Plan the whole flow: request the code from
-the target service immediately after you get the number, not ten minutes later.
+The number lives about 20 minutes. Measured on 08 August 2026: an unused activation was still
+`STATUS_WAIT_CODE` at 20.9 minutes and had expired by 21.1. Expiry costs you nothing and needs
+nothing from you, the money goes back on its own. Afterwards `getStatus` answers
+`STATUS_CANCEL`, the same answer as for a cancellation you made yourself, and `setStatus`
+answers `BAD_STATUS`. Plan the whole flow: request the code from the target service
+immediately after you get the number, not ten minutes later.
 
 Always send `lang`, even though the API answers without it. It picks the currency, and
 the default is not `en`: the same balance came back as 3188.81 with `lang=en` and as 270.20
