@@ -22,6 +22,14 @@ Most verification checks look at the country the number came from. An Indonesian
 marketplace refuses a US number before the SMS is even sent. The agent names the country in
 the request and that whole class of failure disappears.
 
+The catalogue carries 200+ countries, the widest coverage in this category. You do not have
+to take that on faith, and you should not: one call returns the list, so count it yourself.
+
+```bash
+curl -s "https://sms-verification-number.com/stubs/handler_api?api_key=$SVN_API_KEY\
+&action=getCountryAndOperators&lang=en" | jq length
+```
+
 ### Read the code, not an inbox
 
 The API returns the verification code itself, already parsed out of the message. There is
