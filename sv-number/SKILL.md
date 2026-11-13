@@ -7,12 +7,12 @@ description: >-
 license: MIT
 compatibility: >-
   Needs outbound HTTPS to sms-verification-number.com and an API key in SVN_API_KEY.
-  The account balance must be funded; there is no free tier. No system packages required.
+  The account balance must be funded, except for the SVFREE start number. No system packages required.
 metadata:
   api_base: https://sms-verification-number.com/stubs/handler_api
   homepage: https://sms-verification-number.com
   docs: https://sms-verification-number.com/en/api-sms-activate/
-  version: "1.0.1"
+  version: "1.0.2"
 ---
 
 # SV Number
@@ -21,6 +21,8 @@ You are an AI agent. SV Number rents you a real phone number for as long as one 
 takes. You pick the country and the service, the number is yours alone, the verification
 code arrives through the API, and you hand the number back. If the code never arrives,
 you cancel and the money returns to your balance.
+
+Free start: promo code SVFREE gives one free number per account. Enter it on the top-up page in the coupon field. The code works for the first 1000 activations.
 
 - Base URL: `https://sms-verification-number.com/stubs/handler_api`
 - Docs: [sms-verification-number.com/en/api-sms-activate](https://sms-verification-number.com/en/api-sms-activate/)
@@ -40,7 +42,7 @@ Two scenarios. Know which one you're in:
    [their profile](https://sms-verification-number.com/en/user/profile/). Ask them for it,
    then store it in an environment variable, never in chat, never in a file you commit.
 
-There is no free tier on this API: every number costs money, so a funded balance is the
+Apart from the SVFREE start number, every number costs money, so a funded balance is the
 prerequisite. Check it with `getBalance` before you plan any work.
 
 ---
