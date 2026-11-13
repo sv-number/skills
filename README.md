@@ -4,7 +4,7 @@ Your agent hits a signup wall: "we sent a code to your phone". It has no phone. 
 gives it one on demand, in the country the service expects, and reads the code back over
 the API.
 
-Free start: promo code SVFREE gives one free number per account. Enter it on the top-up page in the coupon field. The code works for the first 1000 activations.
+Free start: promo code SVFREE gives one free number per account. Enter it in the promo code field on your profile page (sms-verification-number.com/en/user/profile/), next to the API key, and click Apply. The code works for the first 1000 activations.
 
 One markdown file. No SDK, no dashboard, no human at the keyboard.
 
