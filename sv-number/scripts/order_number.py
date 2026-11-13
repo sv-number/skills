@@ -1,7 +1,7 @@
 """Order a number, wait for the verification code, close the activation.
 
     export SVN_API_KEY=your_key_here
-    python order_number.py tg 6          # Telegram, Indonesia
+    python order_number.py tg 6 [max_price]   # Telegram, Indonesia, optional price ceiling
 
 Country and service ids come from the API itself:
     getCountryAndOperators             -> every country with its id
@@ -11,7 +11,8 @@ Country and service ids come from the API itself:
 import os
 import sys
 import time
-import requests
+import urllib.parse
+import urllib.request
 
 API = "https://sms-verification-number.com/stubs/handler_api"
 KEY = os.environ["SVN_API_KEY"]
@@ -19,10 +20,9 @@ KEY = os.environ["SVN_API_KEY"]
 
 def call(action, **params):
     """Every call takes api_key, action and lang. Errors come back as plain text, HTTP 200."""
-    response = requests.get(API, params={"api_key": KEY, "action": action, "lang": "en", **params},
-                            timeout=60)
-    response.raise_for_status()
-    return response.text.strip()
+    query = urllib.parse.urlencode({"api_key": KEY, "action": action, "lang": "en", **params})
+    with urllib.request.urlopen(f"{API}?{query}", timeout=60) as response:
+        return response.read().decode("utf-8").strip()
 
 
 def order(service, country, max_price=None):
@@ -50,8 +50,11 @@ def wait_for_code(activation_id, minutes=20):
 
 
 def main():
+    if len(sys.argv) < 3:
+        sys.exit("usage: python order_number.py SERVICE COUNTRY [MAX_PRICE]")
     service, country = sys.argv[1], sys.argv[2]
-    activation_id, phone = order(service, country)
+    max_price = sys.argv[3] if len(sys.argv) > 3 else None
+    activation_id, phone = order(service, country, max_price)
     print(f"number {phone} (activation {activation_id})")
     print("trigger the SMS on the target service now")
 
