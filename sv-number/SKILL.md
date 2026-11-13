@@ -15,7 +15,7 @@ metadata:
   api_base: https://sms-verification-number.com/stubs/handler_api
   homepage: https://sms-verification-number.com
   docs: https://sms-verification-number.com/en/api-sms-activate/
-  version: "1.0.4"
+  version: "1.0.5"
 ---
 
 # SV Number
