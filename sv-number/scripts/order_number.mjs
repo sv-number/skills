@@ -1,7 +1,7 @@
 // Order a number, wait for the verification code, close the activation.
 //
 //     export SVN_API_KEY=your_key_here
-//     node order_number.mjs tg 6        // Telegram, Indonesia
+//     node order_number.mjs tg 6 [maxPrice]   // Telegram, Indonesia, optional price ceiling
 //
 // Country and service ids come from getCountryAndOperators and
 // getServicesAndCostWithStatistics.
@@ -37,8 +37,12 @@ async function waitForCode(id, minutes = 20) {
   return null;
 }
 
-const [service, country] = process.argv.slice(2);
-const { id, phone } = await order(service, country);
+const [service, country, maxPrice] = process.argv.slice(2);
+if (!service || !country) {
+  console.error("usage: node order_number.mjs SERVICE COUNTRY [MAX_PRICE]");
+  process.exit(1);
+}
+const { id, phone } = await order(service, country, maxPrice);
 console.log(`number ${phone} (activation ${id})`);
 console.log("trigger the SMS on the target service now");
 
