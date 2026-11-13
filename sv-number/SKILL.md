@@ -38,8 +38,8 @@ Two scenarios. Know which one you're in:
    human shared one earlier. Skip to [Quick start](#quick-start).
 2. You don't have a key. Your human creates an account at
    [sms-verification-number.com/en/register](https://sms-verification-number.com/en/register/),
-   tops up the balance, and copies the key from
-   [their profile](https://sms-verification-number.com/en/user/profile/). Ask them for it,
+   tops up the balance (or enters SVFREE), generates the key in
+   [their profile](https://sms-verification-number.com/en/user/profile/) (a new account has none) and copies it. Ask them for it,
    then store it in an environment variable, never in chat, never in a file you commit.
 
 Apart from the SVFREE start number, every number costs money, so a funded balance is the
