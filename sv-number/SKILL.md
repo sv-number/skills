@@ -7,12 +7,15 @@ description: >-
 license: MIT
 compatibility: >-
   Needs outbound HTTPS to sms-verification-number.com and an API key in SVN_API_KEY.
-  The account balance must be funded, except for the SVFREE start number. No system packages required.
+  The account balance must be funded, except for the SVFREE start number.
+  The bundled scripts need Python 3 (standard library only) or Node.js 18+ (built-in fetch).
 metadata:
+  category: productivity
+  author: sv-number
   api_base: https://sms-verification-number.com/stubs/handler_api
   homepage: https://sms-verification-number.com
   docs: https://sms-verification-number.com/en/api-sms-activate/
-  version: "1.0.3"
+  version: "1.0.4"
 ---
 
 # SV Number
@@ -297,7 +300,8 @@ website: whoever holds it holds the second factor forever.
 import base64, hmac, hashlib, struct, time
 
 def totp(secret: str, digits: int = 6, period: int = 30) -> str:
-    key = base64.b32decode(secret.replace(" ", "").upper() + "=" * (-len(secret) % 8))
+    clean = secret.replace(" ", "").upper()
+    key = base64.b32decode(clean + "=" * (-len(clean) % 8))
     counter = struct.pack(">Q", int(time.time()) // period)
     digest = hmac.new(key, counter, hashlib.sha1).digest()
     offset = digest[-1] & 0x0F
@@ -308,8 +312,6 @@ def totp(secret: str, digits: int = 6, period: int = 30) -> str:
 Codes rotate every 30 seconds. If one is rejected, wait for the next window rather than
 retrying the same digits, and check the machine clock, since a drifted clock breaks TOTP
 silently.
-
-Codes rotate every 30 seconds, so a rejected code usually means the machine clock has drifted, not that the secret is wrong.
 
 ---
 
@@ -377,15 +379,28 @@ Read these once. They'll save you money.
 The same nine calls are available as an MCP server, so a runner that speaks MCP does not
 have to touch HTTP at all:
 
-```bash
-claude mcp add sv-number --env SVN_API_KEY=your_key_here -- npx -y sv-number-mcp
+Add this server entry to the MCP configuration of your runner. The key comes from the
+environment, so it never appears in a command line or shell history:
+
+```json
+{
+  "mcpServers": {
+    "sv-number": {
+      "command": "npx",
+      "args": ["-y", "sv-number-mcp@1.0.2"],
+      "env": { "SVN_API_KEY": "${SVN_API_KEY}" }
+    }
+  }
+}
 ```
 
+If your runner does not expand `${SVN_API_KEY}`, set the variable in the runner's own secret store.
 Source and configuration for other runners: https://github.com/sv-number/mcp-server
 
 ## Ready-made scripts
 
-Both do the whole cycle: order, poll, close or cancel.
+Both do the whole cycle: order, poll, close or cancel. Pass a price ceiling as the third
+argument (`python scripts/order_number.py tg 6 1.50`) so a paid order never exceeds it.
 
 - [scripts/order_number.py](scripts/order_number.py)
 - [scripts/order_number.mjs](scripts/order_number.mjs)
