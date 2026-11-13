@@ -4,6 +4,8 @@ Your agent hits a signup wall: "we sent a code to your phone". It has no phone. 
 gives it one on demand, in the country the service expects, and reads the code back over
 the API.
 
+Free start: promo code SVFREE gives one free number per account. Enter it on the top-up page in the coupon field. The code works for the first 1000 activations.
+
 One markdown file. No SDK, no dashboard, no human at the keyboard.
 
 ```
@@ -70,7 +72,7 @@ a directory named after the skill, holding `SKILL.md` and `scripts/`. Point any 
 it and it works as is, in Claude Code, Codex or anything else that reads a skill. The key comes from
 [your profile](https://sms-verification-number.com/en/user/profile/) after
 [signup](https://sms-verification-number.com/en/register/). The balance has to be funded:
-there is no free tier on this API.
+apart from the SVFREE start number.
 
 ## The cycle
 
