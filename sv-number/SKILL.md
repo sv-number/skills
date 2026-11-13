@@ -22,7 +22,7 @@ takes. You pick the country and the service, the number is yours alone, the veri
 code arrives through the API, and you hand the number back. If the code never arrives,
 you cancel and the money returns to your balance.
 
-Free start: promo code SVFREE gives one free number per account. Enter it on the top-up page in the coupon field. The code works for the first 1000 activations.
+Free start: promo code SVFREE gives one free number per account. Enter it in the promo code field on your profile page (sms-verification-number.com/en/user/profile/), next to the API key, and click Apply. The code works for the first 1000 activations.
 
 - Base URL: `https://sms-verification-number.com/stubs/handler_api`
 - Docs: [sms-verification-number.com/en/api-sms-activate](https://sms-verification-number.com/en/api-sms-activate/)
